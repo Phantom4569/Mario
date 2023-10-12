@@ -7,33 +7,24 @@ public class player : MonoBehaviour
     public float speed = 10f;
     private Rigidbody2D rb;
     public float horizontal;
-    private bool flipRight = true;
-    // Start is called before the first frame update
+    private bool flip = true;
+    private Animator animator;
     void Start()
     {
       rb = GetComponent<Rigidbody2D>(); 
+      animator = GetComponent<Animator>();
     }
-
-    // Update is called once per frame
     void Update()
     {
        horizontal = Input.GetAxis("Horizontal")*speed;
+
        rb.velocity = new Vector2(horizontal,rb.velocity.y);
-       if(horizontal > 0 && !flipRight)
+       animator.SetFloat("moveX",Mathf.Abs(horizontal));
+       if ((horizontal > 0 && !flip)||(horizontal < 0 && flip))
        {
-        Flip();
-       }else if(horizontal < 0 && flipRight)
-       {
-        Flip();
+        transform.localScale *= new Vector2(-1,1);
+         flip = !flip;
        }
-    }
-    void Flip(
-    )
-    {
-       flipRight = !flipRight;
-       Vector3 theScale = transform.localScale;
-       theScale.x = theScale.x * (-1);
-       transform.localScale = theScale; 
     }
 }
 
