@@ -15,6 +15,8 @@ public class player : MonoBehaviour
     private float gchr;
     public bool onGround;
     public float vertical;
+    private Vector3 respawnPoint;
+    public GameObject DeadZone;
     void Start()
     {
       rb = GetComponent<Rigidbody2D>(); 
@@ -23,7 +25,8 @@ public class player : MonoBehaviour
     }
     void Update()
     {
-       horizontal = Input.GetAxis("Horizontal")*speed;
+        DeadZone.transform.position = new Vector2(transform.position.x, DeadZone.transform.position.y);
+        horizontal = Input.GetAxis("Horizontal")*speed;
 
        rb.velocity = new Vector2(horizontal,rb.velocity.y);
        animator.SetFloat("moveX",Mathf.Abs(horizontal));
@@ -34,6 +37,17 @@ public class player : MonoBehaviour
        }
        Jump();
        CheckingGround();
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "DeadZone")
+        {
+            transform.position = respawnPoint;
+        }
+        else if (collision.tag == "checkpoint")
+        {
+            respawnPoint = transform.position;
+        }
     }
     void Jump()
     {
