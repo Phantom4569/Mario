@@ -29,27 +29,35 @@ public class player : MonoBehaviour
     private float timeronGroun;
     public float JumpTime = 4;
     private bool onG;
+    private float GravityDef;
+    private bool onW;
 
     void Start()
     {
-      rb = GetComponent<Rigidbody2D>(); 
-      animator = GetComponent<Animator>();
-      gchr = gch.GetComponent<CircleCollider2D>().radius;
-      wchrRight = wchRight.GetComponent<CircleCollider2D>().radius;
+        rb = GetComponent<Rigidbody2D>(); 
+        animator = GetComponent<Animator>();
+        gchr = gch.GetComponent<CircleCollider2D>().radius;
+        wchrRight = wchRight.GetComponent<CircleCollider2D>().radius;
+        GravityDef = rb.gravityScale;
     }
     void Update()
     {
-        DeadZone.transform.position = new Vector2(transform.position.x, DeadZone.transform.position.y);
-        if ((horizontal > 0 && !flip)||(horizontal < 0 && flip))
-        {
-         transform.localScale *= new Vector2(-1,1);
-          flip = !flip;
-        }
+        DeadZoner();
         Jump();
         CheckingGround();
         checkingwallsRight();
         JumpOnWall();
         walking();
+        onwallgr();
+    }
+    void DeadZoner()
+    {
+        DeadZone.transform.position = new Vector2(transform.position.x, DeadZone.transform.position.y);
+        if ((horizontal > 0 && !flip) || (horizontal < 0 && flip))
+        {
+            transform.localScale *= new Vector2(-1, 1);
+            flip = !flip;
+        }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -60,6 +68,10 @@ public class player : MonoBehaviour
         else if (collision.tag == "checkpoint")
         {
             respawnPoint = transform.position;
+        }
+        else if (collision.tag == "winplace")
+        {
+            SceneManager.LoadScene("win");
         }
     }
     void Jump()
@@ -95,6 +107,27 @@ public class player : MonoBehaviour
             animator.SetFloat("moveX", Mathf.Abs(horizontal));
         }
     }
+    void onwallgr()
+    {
+        if (!blockMoveX)
+        {
+            if (onwallRight && !onGround)
+            {
+                rb.gravityScale = 0;
+                rb.velocity = new Vector2(0, 0);
+                animator.StopPlayback();
+                animator.Play("onwall");
+                onW = true;
+                animator.SetBool("onW", onW);
+            }
+            else if (!onwallRight && !onGround)
+            {
+                rb.gravityScale = GravityDef;
+                onW = false; ;
+                animator.SetBool("onW", onW);
+            }
+        }  
+    }
     void checkingwallsRight()
     {
         onwallRight = Physics2D.OverlapCircle(wchRight.position, wchrRight, walls);
@@ -107,6 +140,7 @@ public class player : MonoBehaviour
             transform.localScale *= new Vector2(-1, 1);
             flip = !flip;
             rb.velocity = new Vector2(transform.localScale.x * JumpAngle.x, JumpAngle.y);
+            animator.Play("fall");
         }
         if (blockMoveX && (timerWallJump += Time.deltaTime) >= JumpWallTime)
         {
