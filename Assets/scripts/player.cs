@@ -16,8 +16,10 @@ public class player : MonoBehaviour
     private float gchr;
     public bool onGround;
     public float vertical;
+    public GameObject groundch;
     private Vector3 respawnPoint;
     public GameObject DeadZone;
+    public GameObject BulletDieZone;
     public Transform wchRight;
     public bool onwallRight;
     private float wchrRight;
@@ -26,11 +28,10 @@ public class player : MonoBehaviour
     private float JumpWallTime = 0.3f;
     private float timerWallJump;
     public Vector2 JumpAngle = new Vector2(2f, 4);
-    private float timeronGroun;
     public float JumpTime = 4;
-    private bool onG;
     private float GravityDef;
     private bool onW;
+    
 
     void Start()
     {
@@ -42,22 +43,18 @@ public class player : MonoBehaviour
     }
     void Update()
     {
-        DeadZoner();
+        Zones();
         Jump();
-        CheckingGround();
+        //CheckingGround();
         checkingwallsRight();
         JumpOnWall();
         walking();
         onwallgr();
     }
-    void DeadZoner()
+    void Zones()
     {
         DeadZone.transform.position = new Vector2(transform.position.x, DeadZone.transform.position.y);
-        if ((horizontal > 0 && !flip) || (horizontal < 0 && flip))
-        {
-            transform.localScale *= new Vector2(-1, 1);
-            flip = !flip;
-        }
+        BulletDieZone.transform.position = new Vector2(transform.position.x,transform.position.y);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -74,30 +71,42 @@ public class player : MonoBehaviour
             SceneManager.LoadScene("win");
         }
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "ground" || collision.gameObject.tag == "plane")
+        {
+            onGround = true;
+            animator.SetBool("onGround", onGround);
+        }
+        if(collision.gameObject.tag == "plane")
+        {
+            this.transform.parent = collision.transform;
+        }
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "ground" || collision.gameObject.tag == "plane")
+        {
+            onGround = false;
+            animator.SetBool("onGround", onGround);
+        }
+        if (collision.gameObject.tag == "plane")
+        {
+            this.transform.parent = null;
+        }
+    }
     void Jump()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && onGround)
+        if(Input.GetKeyDown(KeyCode.Space) && onGround && !onW)
         {
-            //rb.velocity = new Vector2(rb.velocity.x,jumpforse);
             rb.AddForce(Vector2.up * jumpforse * 50);
         }
     }
-    void CheckingGround()
-    {
-        onGround = Physics2D.OverlapCircle(gch.position,gchr,Ground);
-        animator.SetBool("onGround", onGround);
-        if (timeronGroun >= JumpTime)
-        {
-            onG = false;
-            animator.SetBool("onG", onG);
-            timeronGroun = 0;
-        }
-        else
-        {
-            onG = true;
-            animator.SetBool("onG", onG);
-        }
-    }
+    //void CheckingGround()
+    //{
+    //    onGround = Physics2D.OverlapCircle(gch.position,gchr,Ground);
+    //    animator.SetBool("onGround", onGround);
+    //}
     void walking()
     {
         if(!blockMoveX)
@@ -105,6 +114,12 @@ public class player : MonoBehaviour
             horizontal = Input.GetAxis("Horizontal") * speed;
             rb.velocity = new Vector2(horizontal, rb.velocity.y);
             animator.SetFloat("moveX", Mathf.Abs(horizontal));
+        }
+        if ((horizontal > 0 && !flip) || (horizontal < 0 && flip))
+        {
+            //transform.localScale *= new Vector2(-1, 1);
+            transform.Rotate(0f, 180f, 0f);
+            flip = !flip;
         }
     }
     void onwallgr()
@@ -148,5 +163,6 @@ public class player : MonoBehaviour
             timerWallJump = 0;
         }
     }
+
 }
 

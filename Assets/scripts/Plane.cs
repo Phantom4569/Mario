@@ -1,18 +1,13 @@
+﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Plane : MonoBehaviour
 {
-    [SerializeField] private float damage;
-    [SerializeField] private float moveDistance;
-    [SerializeField] private float speed;
-
     private bool movingLeft;
     private float leftEdge;
     private float rightEdge;
-    private int hilka = 3;
-    public GameObject DroppedCoin;
+    public float moveDistance = 3.1f;
+    public float speed = 5f;
 
     private void Awake()
     {
@@ -21,11 +16,6 @@ public class Enemy : MonoBehaviour
     }
 
     private void Update()
-    {
-        moving();
-        health();
-    }
-    void moving()
     {
         if (movingLeft)
         {
@@ -48,25 +38,6 @@ public class Enemy : MonoBehaviour
             {
                 movingLeft = true;
             }
-        }
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "Player")
-        {
-            collision.GetComponent<Health>().TakeDamage(damage);
-        }
-        if (collision.tag == "Bullet")
-        {
-            hilka -= 1;
-        }
-    }
-    void health()
-    {
-        if (hilka <= 0)
-        {
-            gameObject.SetActive(false);
-            Instantiate(DroppedCoin,transform.position, transform.rotation);
         }
     }
 }

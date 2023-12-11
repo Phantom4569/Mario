@@ -10,6 +10,10 @@ TagManager:
   - jpoint
   - health
   - monster
+  - ground
+  - plane
+  - Bullet
+  - BDZ
   layers:
   - Default
   - TransparentFX

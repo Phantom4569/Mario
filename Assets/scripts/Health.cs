@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Health : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class Health : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+            //SceneManager.LoadScene("Loose");
         }
     }
 
@@ -31,11 +32,11 @@ public class Health : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth + _value, 0, startingHealth);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            TakeDamage(1);
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.E))
+    //    {
+    //        TakeDamage(1);
+    //    }
+    //}
 }
