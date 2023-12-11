@@ -19,7 +19,6 @@ public class Enemy : MonoBehaviour
         leftEdge = transform.position.x - moveDistance;
         rightEdge = transform.position.x + moveDistance;
     }
-
     private void Update()
     {
         moving();

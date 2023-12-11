@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class player : MonoBehaviour
 {
-    public float speed = 5f;
+    private float speed = 5f;
     private Rigidbody2D rb;
     public float horizontal;
     private bool flip = true;
@@ -20,9 +20,9 @@ public class player : MonoBehaviour
     private Vector3 respawnPoint;
     public GameObject DeadZone;
     public GameObject BulletDieZone;
-    public Transform wchRight;
-    public bool onwallRight;
-    private float wchrRight;
+    public Transform wch;
+    public bool onwall;
+    private float wchR;
     public LayerMask walls;
     private bool blockMoveX;
     private float JumpWallTime = 0.3f;
@@ -38,7 +38,7 @@ public class player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>(); 
         animator = GetComponent<Animator>();
         gchr = gch.GetComponent<CircleCollider2D>().radius;
-        wchrRight = wchRight.GetComponent<CircleCollider2D>().radius;
+        wchR = wch.GetComponent<CircleCollider2D>().radius;
         GravityDef = rb.gravityScale;
     }
     void Update()
@@ -46,7 +46,7 @@ public class player : MonoBehaviour
         Zones();
         Jump();
         //CheckingGround();
-        checkingwallsRight();
+        checkingwalls();
         JumpOnWall();
         walking();
         onwallgr();
@@ -70,6 +70,18 @@ public class player : MonoBehaviour
         {
             SceneManager.LoadScene("win");
         }
+        //else if (collision.tag == "monster")
+        //{
+        //    rb.AddForce(Vector2.up * 2 * 50);
+        //    if (flip)
+        //    {
+        //        rb.AddForce(Vector2.right * -100);
+        //    }
+        //    if (!flip)
+        //    {
+        //        rb.AddForce(Vector2.left * -100);
+        //    }
+        //}
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -126,36 +138,34 @@ public class player : MonoBehaviour
     {
         if (!blockMoveX)
         {
-            if (onwallRight && !onGround)
+            if (onwall && !onGround)
             {
                 rb.gravityScale = 0;
                 rb.velocity = new Vector2(0, 0);
                 animator.StopPlayback();
                 animator.Play("onwall");
-                onW = true;
                 animator.SetBool("onW", onW);
             }
-            else if (!onwallRight && !onGround)
+            else if (!onwall && !onGround)
             {
                 rb.gravityScale = GravityDef;
-                onW = false; ;
                 animator.SetBool("onW", onW);
             }
         }  
     }
-    void checkingwallsRight()
+    void checkingwalls()
     {
-        onwallRight = Physics2D.OverlapCircle(wchRight.position, wchrRight, walls);
+        onwall = Physics2D.OverlapCircle(wch.position, wchR, walls);
     }
     void JumpOnWall()
     {
-        if (onwallRight && !onGround && Input.GetKeyDown(KeyCode.Space))
+        if (onwall && !onGround && Input.GetKeyDown(KeyCode.Space))
         {
             blockMoveX = true;
             transform.localScale *= new Vector2(-1, 1);
             flip = !flip;
             rb.velocity = new Vector2(transform.localScale.x * JumpAngle.x, JumpAngle.y);
-            animator.Play("fall");
+            Debug.Log("Jump");
         }
         if (blockMoveX && (timerWallJump += Time.deltaTime) >= JumpWallTime)
         {
@@ -165,4 +175,3 @@ public class player : MonoBehaviour
     }
 
 }
-

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2191991980223705069}
   - component: {fileID: 2191991980223705071}
   - component: {fileID: 2191991980223705070}
+  - component: {fileID: -5740446097371966260}
   m_Layer: 0
   m_Name: Enemies_0
   m_TagString: Untagged
@@ -96,7 +97,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -118,3 +119,19 @@ MonoBehaviour:
   moveDistance: 1
   speed: 2
   DroppedCoin: {fileID: 5367230972551528353, guid: 510b5b26a728244ed869b9da42f2b821, type: 3}
+--- !u!58 &-5740446097371966260
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2191991980223705041}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.0033376217, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.33353686

@@ -7,7 +7,8 @@ public class Health : MonoBehaviour
 {
     [SerializeField] private float startingHealth;
     public float currentHealth { get; private set; }
-
+    public bool live;
+    private float maxHealth = 3;
     private void Awake()
     {
         currentHealth = startingHealth;
@@ -31,12 +32,8 @@ public class Health : MonoBehaviour
     {
         currentHealth = Mathf.Clamp(currentHealth + _value, 0, startingHealth);
     }
-
-    //private void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.E))
-    //    {
-    //        TakeDamage(1);
-    //    }
-    //}
+    public bool isHealthMax()
+    {
+        return currentHealth == maxHealth;
+    }
 }
