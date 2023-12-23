@@ -14,10 +14,10 @@ GameObject:
   - component: {fileID: -3391409013680098463}
   - component: {fileID: 5765420497162012030}
   - component: {fileID: -4528440694570176572}
-  - component: {fileID: -7125589718742113418}
+  - component: {fileID: 6777913260339714884}
   m_Layer: 0
   m_Name: DroppedCoin
-  m_TagString: Untagged
+  m_TagString: coin
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -101,7 +101,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b597cd26dbdb4b64994eda650ee19d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  JumpAngle: {x: 2, y: 8}
 --- !u!70 &-3391409013680098463
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -155,7 +154,7 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0.019207}
   m_Size: {x: 1, y: 1.3764577}
   m_Direction: 0
---- !u!95 &-7125589718742113418
+--- !u!95 &6777913260339714884
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -165,7 +164,7 @@ Animator:
   m_GameObject: {fileID: 5367230972551528353}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8a6725464b49b427aa9a56b7b42a65c2, type: 2}
+  m_Controller: {fileID: 9100000, guid: b1598abdb03e44114b3d21861c64b68e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

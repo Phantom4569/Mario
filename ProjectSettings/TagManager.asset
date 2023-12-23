@@ -14,6 +14,12 @@ TagManager:
   - plane
   - Bullet
   - BDZ
+  - monsterL
+  - monsterR
+  - WeakPoint
+  - FootWeapon
+  - coin
+  - tubecoll
   layers:
   - Default
   - TransparentFX
@@ -22,7 +28,7 @@ TagManager:
   - Water
   - UI
   - walls
-  - 
+  - plane
   - 
   - 
   - 

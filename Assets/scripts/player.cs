@@ -1,177 +1,301 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class player : MonoBehaviour
 {
-    private float speed = 5f;
-    private Rigidbody2D rb;
-    public float horizontal;
-    private bool flip = true;
-    private Animator animator;
-    public int jumpforse;
-    public LayerMask Ground;
-    public Transform gch;
-    private float gchr;
-    public bool onGround;
-    public float vertical;
-    public GameObject groundch;
-    private Vector3 respawnPoint;
+    //GameObjects
     public GameObject DeadZone;
     public GameObject BulletDieZone;
-    public Transform wch;
-    public bool onwall;
-    private float wchR;
+    public GameObject GroundCheck;
+
+    //LayerMasks
+    public LayerMask Ground;
     public LayerMask walls;
+
+    //Bools
+    private bool flip = true;
     private bool blockMoveX;
+    private bool onwall;
+    private bool onGround;
+    private bool KnockFromRight;
+
+    //UnityComponents
+    public Rigidbody2D rb;
+    private Animator animator;
+    private SpriteRenderer sr;
+    private CapsuleCollider2D ccr;
+
+    //Float
+    public float horizontal;
+    private float gchr;
+    private float wchR;
     private float JumpWallTime = 0.3f;
     private float timerWallJump;
-    public Vector2 JumpAngle = new Vector2(2f, 4);
-    public float JumpTime = 4;
     private float GravityDef;
-    private bool onW;
-    
+    private float KBForce = 6;
+    private float KBCounter;
+    private float KBTotalTime = 0.2f;
+
+    //text
+    public Text coinCount;
+
+    //Integer
+    private int jumpforse = 9;
+    private int kf = 25;
+    private int speed = 5;
+
+    //Transforms
+    public Transform GroundCheckTransform;
+    public Transform WallCheck;
+
+    //c# scripts
+    public Health health;
+    public FootWeapon FootWeapon;
+    public Enemy enemy;
+
+    //Vector(2,3)
+    private Vector3 respawnPoint;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>(); 
+        rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        gchr = gch.GetComponent<CircleCollider2D>().radius;
-        wchR = wch.GetComponent<CircleCollider2D>().radius;
+        gchr = GroundCheckTransform.GetComponent<CircleCollider2D>().radius;
+        wchR = WallCheck.GetComponent<CircleCollider2D>().radius;
         GravityDef = rb.gravityScale;
+        sr = GetComponent<SpriteRenderer>();
+        ccr = GetComponent<CapsuleCollider2D>();
+        ccr.isTrigger = false;
     }
+
     void Update()
     {
-        Zones();
-        Jump();
-        //CheckingGround();
-        checkingwalls();
-        JumpOnWall();
-        walking();
-        onwallgr();
+        if (health.live)
+        {
+            Zones();
+            Jump();
+            Checkings();
+            JumpOnWall();
+            Move();
+            OnWall();
+            AnimSet();
+            CoinCounter();
+            jumpInTube();
+        }
     }
+
+    void CoinCounter()
+    {
+        coinCount.text = PlayerPrefs.GetInt("coins").ToString();
+    }
+
     void Zones()
     {
-        DeadZone.transform.position = new Vector2(transform.position.x, DeadZone.transform.position.y);
-        BulletDieZone.transform.position = new Vector2(transform.position.x,transform.position.y);
+        BulletDieZone.transform.position = new Vector2(transform.position.x, transform.position.y);
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "DeadZone")
+
         {
             transform.position = respawnPoint;
         }
+
         else if (collision.tag == "checkpoint")
         {
             respawnPoint = transform.position;
         }
+
         else if (collision.tag == "winplace")
         {
             SceneManager.LoadScene("win");
         }
-        //else if (collision.tag == "monster")
-        //{
-        //    rb.AddForce(Vector2.up * 2 * 50);
-        //    if (flip)
-        //    {
-        //        rb.AddForce(Vector2.right * -100);
-        //    }
-        //    if (!flip)
-        //    {
-        //        rb.AddForce(Vector2.left * -100);
-        //    }
-        //}
+
+        else if (collision.tag == "monster" && enemy.CanTDam)
+        {
+            KBCounter = KBTotalTime;
+            if (collision.transform.position.x <= transform.position.x)
+            {
+                KnockFromRight = false;
+            }
+            else if (collision.transform.position.x > transform.position.x)
+            {
+                KnockFromRight = true;
+            }
+            
+        }
     }
+
+    //IEnumerator Timer()
+    //{
+    //    yield return new WaitForSeconds(0.02f);
+    //}
+
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "ground" || collision.gameObject.tag == "plane")
-        {
-            onGround = true;
-            animator.SetBool("onGround", onGround);
-        }
-        if(collision.gameObject.tag == "plane")
+
+
+        if (collision.gameObject.tag == "plane")
         {
             this.transform.parent = collision.transform;
         }
+
     }
+
+    void AnimSet()
+    {
+        animator.SetBool("onGround", onGround);
+        animator.SetBool("onW", onwall);
+    }
+
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "ground" || collision.gameObject.tag == "plane")
+
+        if (collision.gameObject.tag == "plane" && !Physics2D.OverlapCircle(GroundCheckTransform.position, gchr, Ground))
         {
             onGround = false;
-            animator.SetBool("onGround", onGround);
-        }
-        if (collision.gameObject.tag == "plane")
+        }else if (collision.gameObject.tag == "plane")
         {
             this.transform.parent = null;
         }
+
     }
-    void Jump()
+
+    void jumpInTube()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && onGround && !onW)
+        if (FootWeapon.OnTube && (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)))
         {
             rb.AddForce(Vector2.up * jumpforse * 50);
+            ccr.isTrigger = true;
+        }
+        if (ccr.isTrigger)
+        {
+            StartCoroutine(Timer1s());
         }
     }
-    //void CheckingGround()
-    //{
-    //    onGround = Physics2D.OverlapCircle(gch.position,gchr,Ground);
-    //    animator.SetBool("onGround", onGround);
-    //}
-    void walking()
+
+    void Jump()
     {
-        if(!blockMoveX)
+
+         if (Input.GetKeyDown(KeyCode.Space) && onGround && !onwall)
+         {
+             rb.AddForce(Vector2.up * jumpforse * 50);
+         }
+
+    }
+
+    IEnumerator Timer1s()
+    {
+        animator.StopPlayback();
+        animator.Play("fall");
+        yield return new WaitForSeconds(1);
+        SceneManager.LoadScene("lvl1UndG");
+    }
+
+    void Move()
+    {
+        if (KBCounter <= 0)
         {
-            horizontal = Input.GetAxis("Horizontal") * speed;
-            rb.velocity = new Vector2(horizontal, rb.velocity.y);
-            animator.SetFloat("moveX", Mathf.Abs(horizontal));
+            sr.color = Color.white;
+            if (!blockMoveX)
+            {
+
+                horizontal = Input.GetAxis("Horizontal") * speed;
+                rb.velocity = new Vector2(horizontal, rb.velocity.y);
+                animator.SetFloat("moveX", Mathf.Abs(horizontal));
+
+            }
+
+            if ((horizontal > 0 && !flip) || (horizontal < 0 && flip))
+            {
+
+                transform.Rotate(0f, 180f, 0f);
+                flip = !flip;
+
+            }
         }
-        if ((horizontal > 0 && !flip) || (horizontal < 0 && flip))
+        else if (KBCounter > 0)
         {
-            //transform.localScale *= new Vector2(-1, 1);
-            transform.Rotate(0f, 180f, 0f);
-            flip = !flip;
+            sr.color = Color.red;
+            if (KnockFromRight)
+            {
+                rb.velocity = new Vector2(-KBForce, KBForce);
+            }
+            else if (!KnockFromRight)
+            {
+                rb.velocity = new Vector2(KBForce, KBForce);
+            }
+            KBCounter -= Time.deltaTime;
         }
     }
-    void onwallgr()
+
+
+    void Checkings()
     {
+
+        onwall = Physics2D.OverlapCircle(WallCheck.position, wchR, walls);
+        onGround = Physics2D.OverlapCircle(GroundCheckTransform.position, gchr, Ground);
+
+
+    }
+
+    void OnWall()
+    {
+
         if (!blockMoveX)
         {
+
             if (onwall && !onGround)
             {
                 rb.gravityScale = 0;
-                rb.velocity = new Vector2(0, 0);
+                rb.velocity = new Vector3(0,-0.5f,0);
                 animator.StopPlayback();
                 animator.Play("onwall");
-                animator.SetBool("onW", onW);
             }
             else if (!onwall && !onGround)
             {
                 rb.gravityScale = GravityDef;
-                animator.SetBool("onW", onW);
             }
-        }  
+
+        }
+
     }
-    void checkingwalls()
-    {
-        onwall = Physics2D.OverlapCircle(wch.position, wchR, walls);
-    }
+
     void JumpOnWall()
     {
+
         if (onwall && !onGround && Input.GetKeyDown(KeyCode.Space))
         {
+
             blockMoveX = true;
-            transform.localScale *= new Vector2(-1, 1);
+            transform.Rotate(0f, 180f, 0f);
             flip = !flip;
-            rb.velocity = new Vector2(transform.localScale.x * JumpAngle.x, JumpAngle.y);
-            Debug.Log("Jump");
+
+            if (flip)
+            {
+                rb.AddForce(Vector2.up * jumpforse * kf);
+                rb.AddForce(Vector2.right * jumpforse * kf);
+
+            }
+            else if (!flip)
+            {
+                rb.AddForce(Vector2.up * jumpforse * kf);
+                rb.AddForce(Vector2.right * -jumpforse * kf);
+
+            }
+
         }
+
         if (blockMoveX && (timerWallJump += Time.deltaTime) >= JumpWallTime)
         {
             blockMoveX = false;
             timerWallJump = 0;
         }
+
     }
 
 }

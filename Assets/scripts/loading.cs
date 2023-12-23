@@ -7,7 +7,6 @@ public class loading : MonoBehaviour
     public float speed = 5f;
     private Rigidbody2D rb;
     public float horizontal;
-    private bool flip = true;
     private Animator animator;
     public int jumpforse;
     public LayerMask Ground;
