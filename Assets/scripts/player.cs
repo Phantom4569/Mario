@@ -38,6 +38,7 @@ public class player : MonoBehaviour
     private float KBCounter;
     private float KBTotalTime = 0.2f;
 
+
     //text
     public Text coinCount;
 
@@ -53,7 +54,6 @@ public class player : MonoBehaviour
     //c# scripts
     public Health health;
     public FootWeapon FootWeapon;
-    public Enemy enemy;
 
     //Vector(2,3)
     private Vector3 respawnPoint;
@@ -85,7 +85,6 @@ public class player : MonoBehaviour
             jumpInTube();
         }
     }
-
     void CoinCounter()
     {
         coinCount.text = PlayerPrefs.GetInt("coins").ToString();
@@ -113,9 +112,19 @@ public class player : MonoBehaviour
         {
             SceneManager.LoadScene("win");
         }
+    }
 
-        else if (collision.tag == "monster" && enemy.CanTDam)
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+
+
+        if (collision.gameObject.tag == "plane")
         {
+            this.transform.parent = collision.transform;
+        }
+        else if (collision.gameObject.tag == "monster" && collision.gameObject.GetComponent<Enemy>().CanTDam)
+        {
+            health.currentHealth-=1;
             KBCounter = KBTotalTime;
             if (collision.transform.position.x <= transform.position.x)
             {
@@ -125,23 +134,7 @@ public class player : MonoBehaviour
             {
                 KnockFromRight = true;
             }
-            
-        }
-    }
 
-    //IEnumerator Timer()
-    //{
-    //    yield return new WaitForSeconds(0.02f);
-    //}
-
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-
-
-        if (collision.gameObject.tag == "plane")
-        {
-            this.transform.parent = collision.transform;
         }
 
     }
@@ -157,6 +150,7 @@ public class player : MonoBehaviour
 
         if (collision.gameObject.tag == "plane" && !Physics2D.OverlapCircle(GroundCheckTransform.position, gchr, Ground))
         {
+            this.transform.parent = null;
             onGround = false;
         }else if (collision.gameObject.tag == "plane")
         {

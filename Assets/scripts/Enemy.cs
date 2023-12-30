@@ -20,6 +20,7 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
+        CanTDam = true;
         leftEdge = transform.position.x - moveDistance;
         rightEdge = transform.position.x + moveDistance;
         animator = GetComponent<Animator>();
@@ -29,9 +30,13 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         move();
-        health();
+         
+        if (hilka <= 0)
+        {
+            StartCoroutine(Die());
+        }
     }
-    
+
     void move()
     {
         if (hilka > 0)
@@ -64,10 +69,6 @@ public class Enemy : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //if (collision.tag == "Player" && hilka > 0)
-        //{
-        //    collision.GetComponent<Health>().TakeDamage(damage);
-        //}
         if (collision.tag == "Bullet")
         {
             damaged();
@@ -76,18 +77,13 @@ public class Enemy : MonoBehaviour
     IEnumerator Die()
     {
         animator.Play("enemy_die");
-        transform.position = new Vector2(transform.position.x , yy);
+        transform.position = new Vector2(transform.position.x, yy);
         yield return new WaitForSeconds(1f);
         gameObject.SetActive(false);
         Instantiate(DroppedCoin, transform.position, transform.rotation);
     }
-    void health()
-    {
-        if (hilka <= 0)
-        {
-            StartCoroutine(Die());
-        }
-    }
+
+
     public IEnumerator Damage()
     {
         hilka -= 1;

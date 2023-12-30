@@ -5,20 +5,17 @@ public class Plane : MonoBehaviour
 {
     private bool movingLeft;
     [SerializeField] private float moveDistance = 3.1f;
-    [SerializeField] private float speed = 5f;
+    [SerializeField] private float speed = 3f;
     public bool EasyMode;
     public Vector3[] points = new Vector3[5];
-    public int position = 0;
-    private int i;
+    private int i = 0;
     private float leftEdge;
     private float rightEdge;
-    private Vector3 nextPos;
     public Transform startPos;
-
+    private bool pbl;
 
     private void Awake()
     {
-        nextPos = startPos.position;
         leftEdge = transform.position.x - moveDistance;
         rightEdge = transform.position.x + moveDistance;
     }
@@ -59,26 +56,23 @@ public class Plane : MonoBehaviour
         }
         else if (!EasyMode)
         {
-            //transform.position = Vector3.MoveTowards(transform.position, points[position], speed * Time.deltaTime);
-
-            //if (position == points.Length - 1)
+            //transform.position = Vector3.MoveTowards(transform.position, points[i], speed * Time.deltaTime);
+            //if (i == points.Length - 1)
             //{
-            //    position = 0;
+            //    i = 0;
             //}
             //else
             //{
-            //    position++;
+            //    i++;
             //}
-
-            foreach (var point in points)
+            transform.position = Vector3.MoveTowards(transform.position, points[i], speed * Time.deltaTime);
+            if (transform.position == points[i])
             {
-                transform.position = Vector3.MoveTowards(transform.position, point, speed * Time.deltaTime);
-                Debug.Log(transform.position + " " + point);
-
-                while (transform.position == point)
-                {
-                    StartCoroutine(timeDelt());
-                }
+                i++;
+            }
+            if (i >= points.Length)
+            {
+                i = 0;
             }
         }
     }

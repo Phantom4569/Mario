@@ -20,6 +20,7 @@ TagManager:
   - FootWeapon
   - coin
   - tubecoll
+  - head
   layers:
   - Default
   - TransparentFX

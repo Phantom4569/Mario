@@ -72,6 +72,55 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 6351983875500681496}
+  OnTube: 0
+--- !u!1 &5671341419569564777
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6625264486447319862}
+  - component: {fileID: 8078039198925606524}
+  m_Layer: 0
+  m_Name: head
+  m_TagString: head
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6625264486447319862
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5671341419569564777}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6351983875500681501}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &8078039198925606524
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5671341419569564777}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.01522541, y: 0.23117346}
+  m_Size: {x: 0.15579414, y: 0.18354619}
+  m_Direction: 0
 --- !u!1 &5949987656172219996
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,6 +239,7 @@ Transform:
   - {fileID: 6351983875335603125}
   - {fileID: 3139658622151760560}
   - {fileID: 5364002101966176986}
+  - {fileID: 6625264486447319862}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -279,7 +329,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingHealth: 3
+  currentHealth: 0
   live: 0
+  DieScreen: {fileID: 0}
 --- !u!114 &6351983875500681496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,15 +353,13 @@ MonoBehaviour:
   walls:
     serializedVersion: 2
     m_Bits: 64
-  onwall: 0
-  onGround: 1
-  KnockFromRight: 0
   rb: {fileID: 0}
   horizontal: 0
-  KBCounter: 0
-  KBTotalTime: 0.2
+  coinCount: {fileID: 0}
   GroundCheckTransform: {fileID: 6351983876283946787}
   WallCheck: {fileID: 6351983875335603125}
+  health: {fileID: 0}
+  FootWeapon: {fileID: 0}
 --- !u!114 &8594682326129898338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,6 +374,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShootPos: {fileID: 3139658622151760560}
   Bullet: {fileID: 3573498964917390052, guid: 5c6f2611a66524c1db3376ddf32fa09f, type: 3}
+  bulletCount: {fileID: 0}
 --- !u!70 &6351983875500681497
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

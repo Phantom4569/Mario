@@ -177,8 +177,8 @@ MonoBehaviour:
   speed: 2
   DroppedCoin: {fileID: 5367230972551528353, guid: 510b5b26a728244ed869b9da42f2b821, type: 3}
   hilka: 3
-  player: {fileID: 6351983875500681496, guid: e4b9e29effb1549c3be6b0708f538d4b, type: 3}
   sr: {fileID: 5744282613499173331}
+  CanTDam: 0
 --- !u!95 &5744282613499173333
 Animator:
   serializedVersion: 5
@@ -210,7 +210,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.046304584}

@@ -27,14 +27,6 @@ public class Health : MonoBehaviour
     {
         currentHealth = startingHealth;
     }
-
-    //public void TakeDamage(float _damage)
-    //{
-
-    //    currentHealth = Mathf.Clamp(currentHealth - _damage, 0, startingHealth);
-
-    //}
-
     public void addHeath(float _value)
     {
         currentHealth = Mathf.Clamp(currentHealth + _value, 0, startingHealth);
@@ -44,11 +36,4 @@ public class Health : MonoBehaviour
     {
         return currentHealth == maxHealth;
     }
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (collision.tag == "monster")
-    //    {
-    //        currentHealth = Mathf.Clamp(currentHealth - 1, 0, startingHealth);
-    //    }
-    //}
 }
