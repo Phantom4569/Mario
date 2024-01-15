@@ -25,7 +25,7 @@ public class player : MonoBehaviour
     public Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer sr;
-    private CapsuleCollider2D ccr;
+    private Collider2D ccr;
 
     //Float
     public float horizontal;
@@ -66,8 +66,9 @@ public class player : MonoBehaviour
         wchR = WallCheck.GetComponent<CircleCollider2D>().radius;
         GravityDef = rb.gravityScale;
         sr = GetComponent<SpriteRenderer>();
-        ccr = GetComponent<CapsuleCollider2D>();
+        ccr = GetComponent<Collider2D>();
         ccr.isTrigger = false;
+        PlayerPrefs.SetInt("Big",0);
     }
 
     void Update()
@@ -83,11 +84,17 @@ public class player : MonoBehaviour
             AnimSet();
             CoinCounter();
             jumpInTube();
+            BigMario();
         }
     }
     void CoinCounter()
     {
         coinCount.text = PlayerPrefs.GetInt("coins").ToString();
+    }
+
+    void BigMario()
+    {
+        animator.SetInteger("BigM", PlayerPrefs.GetInt("Big"));
     }
 
     void Zones()
@@ -233,7 +240,6 @@ public class player : MonoBehaviour
 
         onwall = Physics2D.OverlapCircle(WallCheck.position, wchR, walls);
         onGround = Physics2D.OverlapCircle(GroundCheckTransform.position, gchr, Ground);
-
 
     }
 
